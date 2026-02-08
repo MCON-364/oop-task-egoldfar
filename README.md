@@ -21,7 +21,8 @@ You are provided with an existing task-management system that uses object-orient
 ### Step 2: Seal the Command Hierarchy
 - Make the `Command` interface sealed
 - Explicitly list the permitted implementations
-- Discuss how this improves safety and clarity
+- Make each of the permitted implementations final
+- Discuss how this improves safety and clarity in the top level comments in the Command class
 
 ### Step 3: Improve Exception Handling
 - Replace null checks with `Optional`
