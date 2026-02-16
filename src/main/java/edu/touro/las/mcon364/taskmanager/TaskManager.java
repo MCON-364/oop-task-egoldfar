@@ -8,27 +8,12 @@ public class TaskManager {
         this.registry = registry;
     }
 
-    // TODO: Students must refactor this using pattern-matching switch
-    // Current implementation uses old-style instanceof checks
     public void run(Command command) {
-        var type = command.class;
-        switch (type) {
-            case AddTaskCommand.class:
-            case RemoveTaskCommand.class:
-            case UpdateTaskCommand.class:
-                command.execute();
-                break;
-            default:
-                throw new IllegalArgumentException("Unknown command type");
-        }
-        if (command instanceof AddTaskCommand) {
-            command.execute();
-        } else if (command instanceof RemoveTaskCommand) {
-            command.execute();
-        } else if (command instanceof UpdateTaskCommand) {
-            command.execute();
-        } else {
-            throw new IllegalArgumentException("Unknown command type");
+        switch (command) {
+            case AddTaskCommand a -> command.execute();
+            case RemoveTaskCommand r -> command.execute();
+            case UpdateTaskCommand u -> command.execute();
+            default -> throw new IllegalArgumentException("Unknown command type");
         }
     }
 }
