@@ -54,8 +54,11 @@ public class DemoMain {
 
     private void demonstrateUpdatingNonExistentTask() {
         System.out.println("\n4. Attempting to update non-existent task...");
-        manager.run(new UpdateTaskCommand(registry, "Non-existent task", Priority.HIGH));
-        System.out.println("   ^ This should throw a custom exception, not just print a warning!");
+        try {
+            manager.run(new UpdateTaskCommand(registry, "Non-existent task", Priority.HIGH));
+        } catch (TaskNotFoundException e) {
+            System.out.println("   Caught TaskNotFoundException: " + e.getMessage());
+        }
     }
 
     private void demonstrateRemovingTask() {
@@ -67,8 +70,12 @@ public class DemoMain {
 
     private void demonstrateNullReturn() {
         System.out.println("\n6. Attempting to retrieve non-existent task...");
-        Task missing = registry.get("Non-existent task")
-                .orElseThrow(() -> new TaskNotFoundException("No such task found"));
+        try {
+            Task missing = registry.get("Non-existent task")
+                    .orElseThrow(() -> new TaskNotFoundException("No such task found"));
+        } catch (TaskNotFoundException e) {
+            System.out.println("   Caught TaskNotFoundException: " + e.getMessage());
+        }
     }
 
     private void displaySummary() {
