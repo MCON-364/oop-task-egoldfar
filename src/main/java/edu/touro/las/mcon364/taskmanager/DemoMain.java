@@ -40,12 +40,9 @@ public class DemoMain {
 
     private void demonstrateRetrievingTask() {
         System.out.println("\n2. Retrieving a specific task...");
-        Task retrieved = registry.get("Fix critical bug");
-        if (retrieved != null) {
-            System.out.println("   Found: " + retrieved.getName() + " (Priority: " + retrieved.getPriority() + ")");
-        } else {
-            System.out.println("   Task not found");
-        }
+        Task retrieved = registry.get("Fix critical bug")
+                .orElseThrow(() -> new TaskNotFoundException("No such task found"));
+        System.out.println("   Found: " + retrieved.name() + " (Priority: " + retrieved.priority() + ")");
     }
 
     private void demonstrateUpdatingTask() {
@@ -57,8 +54,11 @@ public class DemoMain {
 
     private void demonstrateUpdatingNonExistentTask() {
         System.out.println("\n4. Attempting to update non-existent task...");
-        manager.run(new UpdateTaskCommand(registry, "Non-existent task", Priority.HIGH));
-        System.out.println("   ^ This should throw a custom exception, not just print a warning!");
+        try {
+            manager.run(new UpdateTaskCommand(registry, "Non-existent task", Priority.HIGH));
+        } catch (TaskNotFoundException e) {
+            System.out.println("   Caught TaskNotFoundException: " + e.getMessage());
+        }
     }
 
     private void demonstrateRemovingTask() {
@@ -70,9 +70,11 @@ public class DemoMain {
 
     private void demonstrateNullReturn() {
         System.out.println("\n6. Attempting to retrieve non-existent task...");
-        Task missing = registry.get("Non-existent task");
-        if (missing == null) {
-            System.out.println("   Returned null - this should be refactored to use Optional!");
+        try {
+            Task missing = registry.get("Non-existent task")
+                    .orElseThrow(() -> new TaskNotFoundException("No such task found"));
+        } catch (TaskNotFoundException e) {
+            System.out.println("   Caught TaskNotFoundException: " + e.getMessage());
         }
     }
 
@@ -90,7 +92,7 @@ public class DemoMain {
     private void displayAllTasks() {
         System.out.println("\n   Current tasks in registry:");
         registry.getAll().forEach((name, task) ->
-            System.out.println("     - " + name + " (Priority: " + task.getPriority() + ")")
+            System.out.println("     - " + name + " (Priority: " + task.priority() + ")")
         );
     }
 }
